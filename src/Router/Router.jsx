@@ -8,7 +8,7 @@ import AllProducts from "../AllProducts/AllProducts";
 import PrivetRoute from "../AuthProvider/PrivetRoute";
 import ProductDetails from "../Components/ProductDetails/ProductDetails";
 import ProductsRoot from "../ProductsRoot/ProductsRoot";
-
+import MyBids from "../Components/MyBids/MyBids";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,7 +39,20 @@ const router = createBrowserRouter([
       {
         path:"/products/productDetails/:id",
         loader: ({params})=> fetch(`http://localhost:3000/products/${params.id}`),
-        Component: ProductDetails,
+        hydrateFallbackElement: <p>Loading</p>,
+        element: <>
+        <PrivetRoute>
+          <ProductDetails></ProductDetails>
+        </PrivetRoute>
+        </>
+      },
+      {
+        path: "/products/myBids",
+        element: <>
+        <PrivetRoute>
+        <MyBids></MyBids>
+        </PrivetRoute>
+        </>
       }
 
     ],

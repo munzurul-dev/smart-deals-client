@@ -1,5 +1,6 @@
 import { useState, createContext, useEffect } from "react";
 import auth from "../Firebase/firebase.config";
+
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -15,22 +16,48 @@ export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [users, setUsers] = useState(null);
-  const {loading , setLoading}= useState(false)
+  const [loading, setLoading] = useState(true);
+
   const googleProvider = new GoogleAuthProvider();
-  const createUser = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+
+  const createUser = async (email, password) => {
+    setLoading(true);
+
+    try {
+      return await createUserWithEmailAndPassword(auth, email, password);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const signInWithGoogle = () => {
-    return signInWithPopup(auth, googleProvider);
+  const signInWithGoogle = async () => {
+    setLoading(true);
+
+    try {
+      return await signInWithPopup(auth, googleProvider);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const login = (email , password)=>{
-    return signInWithEmailAndPassword(auth,email,password);
-  }
+  const login = async (email, password) => {
+    setLoading(true);
 
-  const unsubscribe = () => {
-    return signOut(auth);
+    try {
+      return await signInWithEmailAndPassword(auth, email, password);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const unsubscribe = async () => {
+    setLoading(true);
+
+    try {
+      await signOut(auth);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateUserProfile = async (name, photoURL) => {
@@ -38,23 +65,35 @@ const AuthProvider = ({ children }) => {
       throw new Error("User is not logged in");
     }
 
-    await updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: photoURL,
-    });
+    setLoading(true);
+
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        photoURL: photoURL,
+      });
+
+      setUsers(auth.currentUser);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
+    const unsubscribeAuth = onAuthStateChanged(
+      auth,
+      (currentUser) => {
         setUsers(currentUser);
-        return;
-      }
-      else{
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Authentication error:", error);
         setUsers(null);
-        console.log("User is signed out");
-      }
-    });
+        setLoading(false);
+      },
+    );
+
+    return () => unsubscribeAuth();
   }, []);
 
   const authData = {
@@ -66,9 +105,12 @@ const AuthProvider = ({ children }) => {
     unsubscribe,
     loading,
     setLoading,
-    login
+    login,
   };
-  return <AuthContext value={authData}>{children}</AuthContext>;
+
+  return (
+    <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

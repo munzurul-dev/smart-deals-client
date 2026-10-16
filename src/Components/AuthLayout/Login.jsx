@@ -2,6 +2,7 @@ import { use, useState } from "react";
 import { LuEyeClosed } from "react-icons/lu";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
+import Loading from "../Loader/loading";
 
 const Login = () => {
   const { login, signInWithGoogle } = use(AuthContext);
@@ -25,7 +26,7 @@ const Login = () => {
         console.log(errorMessage);
       });
   };
-
+ 
   const handleGoogleSignIn = () => {
     signInWithGoogle()
       .then((result) => {
@@ -39,6 +40,12 @@ const Login = () => {
         console.log(errorCode, errorMessage);
       });
   };
+
+
+    const {loading} = use(AuthContext);
+  if(loading){
+    return <Loading></Loading>
+  }
 
   return (
     <div className="bg-base-200 w-full min-h-screen mt-10 md:mt-0 md:p-10 lg:p-20">

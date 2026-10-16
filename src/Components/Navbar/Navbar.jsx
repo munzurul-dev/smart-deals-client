@@ -55,11 +55,11 @@ const Navbar = () => {
       </NavLink>
 
       <NavLink
-        to="/mybids"
+        to="/products/myBids"
         className={({ isActive }) =>
           `px-4 py-2 rounded-lg transition-all duration-200 ${
             isActive
-              ? "bg-primary text-white font-semibold"
+              ? "text-primary font-bold"
               : "text-base-content hover:bg-base-200"
           }`
         }

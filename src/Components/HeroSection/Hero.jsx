@@ -20,7 +20,7 @@ const Hero = () => {
         </p>
 
         
-        <form className="relative mx-auto flex w-full max-w-md pt-2">
+        <form onSubmit={ (e)=> e.preventDefault()} className="relative mx-auto flex w-full max-w-md pt-2">
           <input
             className="min-w-0 flex-1 rounded-l-full bg-white py-3 pl-4 pr-2 text-sm shadow-lg outline-none sm:py-3.5 sm:pl-5"
             type="search"
@@ -28,9 +28,8 @@ const Hero = () => {
           />
 
           <button
-            type="submit"
             aria-label="Search products"
-            className="shrink-0 rounded-r-full bg-linear-to-r from-[#7024e8] to-[#a45cf0] px-4 text-white transition hover:opacity-90 sm:px-5"
+            className="shrink-0 rounded-r-full cursor-pointer bg-linear-to-r from-[#7024e8] to-[#a45cf0] px-4 text-white transition hover:opacity-90 sm:px-5"
           >
             <IoSearchOutline size={20} />
           </button>

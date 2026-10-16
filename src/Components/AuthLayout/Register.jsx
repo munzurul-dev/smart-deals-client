@@ -2,6 +2,7 @@ import { use, useState } from "react";
 import { LuEyeClosed } from "react-icons/lu";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { Link } from "react-router";
+import Loading from "../Loader/loading";
 
 const Register = () => {
   const { createUser, signInWithGoogle, updateUserProfile, setUsers } = use(AuthContext);
@@ -54,6 +55,10 @@ const Register = () => {
       });
   };
   const [showPassword, SetshowPassword] = useState(false);
+    const {loading} = use(AuthContext);
+  if(loading){
+    return <Loading></Loading>
+  }
   return (
     <div className="bg-base-200 w-full min-h-screen  md:p-10 lg:p-20">
       <div className="bg-white max-w-4xl mx-auto p-4 md:p-8 lg:p-10 rounded-md shadow-sm ">
